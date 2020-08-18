@@ -5,7 +5,14 @@ import styled from "styled-components";
 
 const Container = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const WebcamContainer = styled.div`
+  margin: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -52,13 +59,17 @@ const App = () => {
 
   return (
     <Container>
-      <Webcam
-        audio={false}
-        mirrored={true}
-        ref={webcamRef}
-        screenshotFormat="image/png"
-      />
-      <PhotoButton onClick={capture}>Take Photo</PhotoButton>
+      <WebcamContainer>
+        {" "}
+        <Webcam
+          audio={false}
+          mirrored={true}
+          ref={webcamRef}
+          screenshotFormat="image/png"
+        />
+        <PhotoButton onClick={capture}>Take Photo</PhotoButton>
+      </WebcamContainer>
+
       {imgSrc && <img src={imgSrc} alt="screenshot" />}
     </Container>
   );
