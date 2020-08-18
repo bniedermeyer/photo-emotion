@@ -45,7 +45,8 @@ const App = () => {
           body: JSON.stringify({ image: imgSrc }),
         });
         const { url } = await response.json();
-        console.log(url);
+        const emotion = await fetch(`/emotion?url=${url}`);
+        console.log(emotion);
       }
     };
 

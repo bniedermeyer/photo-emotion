@@ -1,6 +1,6 @@
 const arc = require("@architect/functions");
-const { uploader } = require("cloudinary").v2;
 const parseBody = arc.http.helpers.bodyParser;
+const { uploader } = require("cloudinary").v2;
 
 exports.handler = async function http(req) {
   const body = parseBody(req);
