@@ -1,2 +1,0 @@
-# photo-emotion
-Begin app
