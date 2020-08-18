@@ -1,43 +1,49 @@
-/* global fetch */
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
+// /* global fetch */
+import React, { useRef, useState, useCallback } from "react";
+import Webcam from "react-webcam";
+import styled from "styled-components";
+
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const PhotoButton = styled.button`
+  margin: 20px;
+  height: 100px;
+  width: 400px;
+  background: transparent;
+  color: white;
+  border: 3px solid white;
+  font-size: 2rem;
+`;
 
 const App = () => {
-  const [message, setMessage] = useState('...loading')
+  const webcamRef = useRef(null);
+  const [imgSrc, setImgSrc] = useState(null);
 
-  useEffect(() => {
-    async function fetchData () {
-      try {
-        let data = await (await fetch('/api')).json()
-        setMessage(data.message)
-      } catch (err) {
-        setMessage(err.message)
-      }
-    }
-    fetchData()
-  })
+  const capture = useCallback(() => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    console.log(imageSrc);
+    setImgSrc(imageSrc);
+  }, [webcamRef, setImgSrc]);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{message}</p>
-        <p>Change me!</p>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Webcam
+        audio={false}
+        mirrored={true}
+        ref={webcamRef}
+        screenshotFormat="image/png"
+      />
+      <PhotoButton onClick={capture}>Take Photo</PhotoButton>
+      {imgSrc && <img src={imgSrc} alt="screenshot" />}
+    </Container>
   );
-}
+};
 
 export default App;
