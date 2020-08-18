@@ -6,6 +6,7 @@ folder build
 
 @http
 get /api
+post /upload-image
 
 @tables
 data

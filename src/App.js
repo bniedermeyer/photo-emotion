@@ -1,5 +1,5 @@
-// /* global fetch */
-import React, { useRef, useState, useCallback } from "react";
+/* global fetch */
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import Webcam from "react-webcam";
 import styled from "styled-components";
 
@@ -26,9 +26,27 @@ const App = () => {
   const webcamRef = useRef(null);
   const [imgSrc, setImgSrc] = useState(null);
 
+  useEffect(() => {
+    const postImage = async () => {
+      if (imgSrc) {
+        const response = await fetch("/upload-image", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ image: imgSrc }),
+        });
+        const { url } = await response.json();
+        console.log(url);
+      }
+    };
+
+    postImage();
+  }, [imgSrc]);
+
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
-    console.log(imageSrc);
     setImgSrc(imageSrc);
   }, [webcamRef, setImgSrc]);
 
