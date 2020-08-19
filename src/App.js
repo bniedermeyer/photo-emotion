@@ -3,6 +3,8 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import Webcam from "react-webcam";
 import styled from "styled-components";
 
+import EmotionDescription from "./components/EmotionDescription";
+
 const Container = styled.div`
   width: 100%;
   height: 100vh;
@@ -12,6 +14,14 @@ const Container = styled.div`
 `;
 
 const WebcamContainer = styled.div`
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ResultContainer = styled.div`
   margin: 20px;
   display: flex;
   flex-direction: column;
@@ -32,22 +42,27 @@ const PhotoButton = styled.button`
 const App = () => {
   const webcamRef = useRef(null);
   const [imgSrc, setImgSrc] = useState(null);
+  const [emotionInfo, setEmotionInfo] = useState(null);
 
   useEffect(() => {
     const postImage = async () => {
       if (imgSrc) {
-        const response = await fetch("/upload-image", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ image: imgSrc }),
-        });
-        const { url } = await response.json();
-        const emotion = await fetch(`/emotion?url=${url}`);
-        const rawEmotion = await emotion.json();
-        console.log(rawEmotion);
+        try {
+          const response = await fetch("/upload-image", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ image: imgSrc }),
+          });
+          const { url } = await response.json();
+          const emotion = await fetch(`/emotion?url=${url}`);
+          const rawEmotion = await emotion.json();
+          setEmotionInfo(rawEmotion);
+        } catch (err) {
+          alert("An error occured analyizing your photo, please try again");
+        }
       }
     };
 
@@ -62,7 +77,6 @@ const App = () => {
   return (
     <Container>
       <WebcamContainer>
-        {" "}
         <Webcam
           audio={false}
           mirrored={true}
@@ -71,8 +85,12 @@ const App = () => {
         />
         <PhotoButton onClick={capture}>Take Photo</PhotoButton>
       </WebcamContainer>
-
-      {imgSrc && <img src={imgSrc} alt="screenshot" />}
+      <ResultContainer>
+        {imgSrc && <img src={imgSrc} alt="screenshot" />}
+        {emotionInfo && (
+          <EmotionDescription emotion={emotionInfo}></EmotionDescription>
+        )}
+      </ResultContainer>
     </Container>
   );
 };
