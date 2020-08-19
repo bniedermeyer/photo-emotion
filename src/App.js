@@ -46,7 +46,8 @@ const App = () => {
         });
         const { url } = await response.json();
         const emotion = await fetch(`/emotion?url=${url}`);
-        console.log(emotion);
+        const rawEmotion = await emotion.json();
+        console.log(rawEmotion);
       }
     };
 
