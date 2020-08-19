@@ -52,7 +52,7 @@ const App = () => {
   const [imgSrc, setImgSrc] = useState(null);
   const [emotionInfo, setEmotionInfo] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(null);
 
   useEffect(() => {
     // handles uploading the image to cloud storage and making request for face detection
