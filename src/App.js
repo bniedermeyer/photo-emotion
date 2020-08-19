@@ -52,7 +52,7 @@ const App = () => {
   const [imgSrc, setImgSrc] = useState(null);
   const [emotionInfo, setEmotionInfo] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState(null);
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     // handles uploading the image to cloud storage and making request for face detection
@@ -89,7 +89,7 @@ const App = () => {
     };
 
     postImage();
-  }, [imgSrc]);
+  }, [imgSrc, email]);
 
   // this takes the photo from the webcam stream. Called by the take photo button below
   const capture = useCallback(() => {
@@ -122,6 +122,16 @@ const App = () => {
   } else {
     content = (
       <WebcamContainer>
+        <label>
+          Help us test new features! Enter your email:
+          <input
+            type="email"
+            id="email-input"
+            name="email-input"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
+        </label>
         <Webcam
           audio={false}
           mirrored={true}
@@ -140,16 +150,7 @@ const App = () => {
   return (
     <AppContainer>
       <h1>Detect Your Emotions!</h1>
-      <label>
-        Help us test new features! Enter your email:
-        <input
-          type="email"
-          id="email-input"
-          name="email-input"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-        />
-      </label>
+
       {content}
     </AppContainer>
   );
