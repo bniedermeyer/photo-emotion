@@ -52,7 +52,7 @@ const App = () => {
   const [imgSrc, setImgSrc] = useState(null);
   const [emotionInfo, setEmotionInfo] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState(null);
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     // handles uploading the image to cloud storage and making request for face detection
@@ -74,7 +74,7 @@ const App = () => {
           // this is the url of the photo that will be used in the response to the computer vision api
           const { url } = await response.json();
           let emotionRequestUrl = `/emotion?url=${url}`;
-          if (email) {
+          if (email.length > 0) {
             emotionRequestUrl += `&email=${email}`;
           }
           const emotionResponse = await fetch(emotionRequestUrl);
