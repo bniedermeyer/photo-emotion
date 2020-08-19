@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "axios": "^0.19.2"
+    "axios": "^0.19.2",
+    "launchdarkly-node-server-sdk": "^5.13.3"
   }
 }
