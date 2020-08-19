@@ -1,5 +1,7 @@
 /* global fetch */
 import React, { useRef, useState, useCallback, useEffect } from "react";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import Loader from "react-loader-spinner";
 import Webcam from "react-webcam";
 import styled from "styled-components";
 
@@ -9,6 +11,7 @@ const Container = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
@@ -19,21 +22,25 @@ const WebcamContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 600px;
 `;
 
 const ResultContainer = styled.div`
-  margin: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border: 2px solid white;
+  padding: 10px;
+  height: 700px;
+  color: white;
 `;
 
-const PhotoButton = styled.button`
+const ActionButton = styled.button`
   margin: 20px;
   height: 100px;
   width: 400px;
-  background: transparent;
+  background: #520052;
   color: white;
   border: 3px solid white;
   font-size: 2rem;
@@ -43,11 +50,14 @@ const App = () => {
   const webcamRef = useRef(null);
   const [imgSrc, setImgSrc] = useState(null);
   const [emotionInfo, setEmotionInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const postImage = async () => {
       if (imgSrc) {
+        setLoading(true);
         try {
+          setEmotionInfo(null);
           const response = await fetch("/upload-image", {
             method: "POST",
             headers: {
@@ -63,6 +73,7 @@ const App = () => {
         } catch (err) {
           alert("An error occured analyizing your photo, please try again");
         }
+        setLoading(false);
       }
     };
 
@@ -76,21 +87,43 @@ const App = () => {
 
   return (
     <Container>
-      <WebcamContainer>
-        <Webcam
-          audio={false}
-          mirrored={true}
-          ref={webcamRef}
-          screenshotFormat="image/png"
-        />
-        <PhotoButton onClick={capture}>Take Photo</PhotoButton>
-      </WebcamContainer>
-      <ResultContainer>
-        {imgSrc && <img src={imgSrc} alt="screenshot" />}
-        {emotionInfo && (
-          <EmotionDescription emotion={emotionInfo}></EmotionDescription>
-        )}
-      </ResultContainer>
+      {!imgSrc && (
+        <WebcamContainer>
+          <Webcam
+            audio={false}
+            mirrored={true}
+            ref={webcamRef}
+            screenshotFormat="image/png"
+            videoConstraints={{ facingMode: "user" }}
+            id="webcam"
+          />
+          <ActionButton type="button" id="take-photo-button" onClick={capture}>
+            Take Photo
+          </ActionButton>
+        </WebcamContainer>
+      )}
+      {imgSrc && (
+        <>
+          <ResultContainer>
+            <h1>Result</h1>
+
+            <img src={imgSrc} alt="screenshot" />
+            {emotionInfo && <EmotionDescription emotion={emotionInfo} />}
+            {loading && (
+              <Loader type="Circles" height="100px" color="#8ab7ff" />
+            )}
+            {!loading && (
+              <ActionButton
+                type="button"
+                id="reset-button"
+                onClick={() => setImgSrc(null)}
+              >
+                Try again?
+              </ActionButton>
+            )}
+          </ResultContainer>
+        </>
+      )}
     </Container>
   );
 };

@@ -5,7 +5,7 @@ const EmotionContainer = styled.div`
   text-align: center;
   font-size: 1.3rem;
   color: white;
-  margin: 10px;
+  height: 100px;
 `;
 
 const EmotionDescription = ({ emotion }) => {
@@ -52,7 +52,7 @@ const EmotionDescription = ({ emotion }) => {
 
   return (
     <EmotionContainer>
-      <p>{emotionVisual}</p>
+      <h2>{emotionVisual}</h2>
       <p>{message}</p>
     </EmotionContainer>
   );
