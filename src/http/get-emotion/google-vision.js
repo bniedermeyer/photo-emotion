@@ -8,7 +8,7 @@ const axios = require("axios").default;
  */
 const getEmotionWithGoogleApi = async (url) => {
   const res = await axios.post(
-    "https://vision.googleapis.com/v1/images:annotate",
+    `https://vision.googleapis.com/v1/images:annotate?key=${process.env.GOOGLE_API_KEY}`,
     {
       requests: [
         {
@@ -24,7 +24,6 @@ const getEmotionWithGoogleApi = async (url) => {
     {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.GOOGLE_API_KEY}`,
       },
     }
   );
