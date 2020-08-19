@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require("uuid");
 const LaunchDarkly = require("launchdarkly-node-server-sdk");
 const getEmotionWithMicrosoftApi = require("./microsoft-vision");
 const getEmotionWithGoogleApi = require("./google-vision");
@@ -13,7 +14,7 @@ const ldClient = LaunchDarkly.init(process.env.LD_API_KEY);
  * @param {*} req the request object
  */
 exports.handler = async function http(req) {
-  const { url } = req.queryStringParameters;
+  const { url, email } = req.queryStringParameters;
   const headers = {
     "content-type": "application/json; charset=utf8",
     "cache-control":
@@ -26,10 +27,18 @@ exports.handler = async function http(req) {
 
   try {
     await ldClient.waitForInitialization();
+    const userKey = email ? email : uuidv4();
+    const userEmail = email ? email : "not-supplied";
+    let user = {
+      key: userKey,
+      anonymous: email === undefined,
+      email: userEmail,
+    };
+
     const visionProvider = await ldClient.variation(
       "vision-api-provider",
-      { key: "contact@brenden.dev" },
-      false
+      user,
+      "Microsoft"
     );
     // since this is an ephemeral function, release all resources
     ldClient.close();
@@ -37,13 +46,13 @@ exports.handler = async function http(req) {
     let emotion;
 
     if (visionProvider === "Microsoft") {
+      console.info("SEND REQUEST TO AZURE ");
       emotion = await getEmotionWithMicrosoftApi(url);
     } else if (visionProvider === "Google") {
-      console.log("SEND REQUEST TO GOOGLE ");
+      console.info("SEND REQUEST TO GOOGLE ");
       emotion = await getEmotionWithGoogleApi(url);
     }
 
-    console.log(emotion);
     return {
       headers,
       body: JSON.stringify({ emotion: emotion.emotion }),
