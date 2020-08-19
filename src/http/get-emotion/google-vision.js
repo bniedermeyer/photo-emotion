@@ -1,5 +1,11 @@
 const axios = require("axios").default;
 
+/**
+ * Uses the Google Cloud Platform Vision API to identify emotion of face
+ * in an image hosted at the given url.
+ *
+ * @param {string} url the url of the image to evaluate
+ */
 const getEmotionWithGoogleApi = async (url) => {
   const res = await axios.post(
     "https://vision.googleapis.com/v1/images:annotate",
@@ -22,6 +28,7 @@ const getEmotionWithGoogleApi = async (url) => {
       },
     }
   );
+
   if (res.data && res.data.responses.length > 0) {
     const { faceAnnotations } = res.data.responses[0];
     const {

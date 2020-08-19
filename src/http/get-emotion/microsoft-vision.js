@@ -1,5 +1,11 @@
 const axios = require("axios").default;
 
+/**
+ * Uses the Microsoft Azure Face Detection API to analyse the image hosted at
+ * the given url and identify the emotion displayed.
+ *
+ * @param {string} url the url of the image to evaluate
+ */
 const getEmotionWithMicrosoftApi = async (url) => {
   console.log("fetching emotion for photo: ", url);
   const baseUrl = process.env.AZURE_ENDPOINT;
