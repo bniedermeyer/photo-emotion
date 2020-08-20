@@ -13,6 +13,10 @@ const WebcamContainer = styled.div`
   height: 600px;
 `;
 
+const EmailInput = styled.input`
+  margin: 10px;
+`;
+
 const PhotoBooth = ({
   flags,
   ldClient,
@@ -26,7 +30,7 @@ const PhotoBooth = ({
       {flags.allowBetaUsers && (
         <label>
           Help us test new features! Enter your email:
-          <input
+          <EmailInput
             type="email"
             id="email-input"
             name="email-input"

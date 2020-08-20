@@ -55,7 +55,7 @@ exports.handler = async function http(req) {
 
     return {
       headers,
-      body: JSON.stringify({ emotion: emotion.emotion }),
+      body: JSON.stringify({ emotion: emotion.emotion, visionProvider }),
     };
   } catch (error) {
     console.log("error fetching emotion: ", error);
