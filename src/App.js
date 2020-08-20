@@ -1,11 +1,10 @@
 /* global fetch */
 import React, { useRef, useState, useCallback, useEffect } from "react";
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import Loader from "react-loader-spinner";
-import Webcam from "react-webcam";
+import { withLDProvider } from "launchdarkly-react-client-sdk";
 import styled from "styled-components";
 
-import EmotionDescription from "./components/EmotionDescription";
+import PhotoBooth from "./components/PhotoBooth";
+import Result from "./components/Result";
 
 const AppContainer = styled.div`
   width: 100%;
@@ -15,36 +14,6 @@ const AppContainer = styled.div`
   justify-content: center;
   align-items: center;
   color: white;
-`;
-
-const WebcamContainer = styled.div`
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 600px;
-`;
-
-const ResultContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid white;
-  padding: 10px;
-  height: 700px;
-  color: white;
-`;
-
-const ActionButton = styled.button`
-  margin: 20px;
-  height: 100px;
-  width: 400px;
-  background: #520052;
-  color: white;
-  border: 3px solid white;
-  font-size: 2rem;
 `;
 
 const App = () => {
@@ -97,53 +66,29 @@ const App = () => {
     setImgSrc(imageSrc);
   }, [webcamRef, setImgSrc]);
 
+  const onEmailChange = (event) => setEmail(event.target.value);
+
+  const onReset = () => setImgSrc(null);
+
   // determine which content to display (photo booth mode or display results)
   let content;
   if (imgSrc) {
     content = (
-      <ResultContainer>
-        <h2>Result</h2>
-
-        <img src={imgSrc} alt="screenshot" />
-        {emotionInfo && <EmotionDescription emotion={emotionInfo} />}
-        {loading && <Loader type="Circles" height="100px" color="#8ab7ff" />}
-        {/* only display retry button when processing completes */}
-        {!loading && (
-          <ActionButton
-            type="button"
-            id="reset-button"
-            onClick={() => setImgSrc(null)}
-          >
-            Try again?
-          </ActionButton>
-        )}
-      </ResultContainer>
+      <Result
+        imgSrc={imgSrc}
+        loading={loading}
+        emotionInfo={emotionInfo}
+        onReset={onReset}
+      />
     );
   } else {
     content = (
-      <WebcamContainer>
-        <label>
-          Help us test new features! Enter your email:
-          <input
-            type="email"
-            id="email-input"
-            name="email-input"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-        </label>
-        <Webcam
-          audio={false}
-          mirrored={true}
-          ref={webcamRef}
-          screenshotFormat="image/png"
-          videoConstraints={{ facingMode: "user" }}
-          id="webcam"
-        />
-        <ActionButton type="button" id="take-photo-button" onClick={capture}>
-          Take Photo
-        </ActionButton>
-      </WebcamContainer>
+      <PhotoBooth
+        capture={capture}
+        webcamRef={webcamRef}
+        email={email}
+        onEmailChange={onEmailChange}
+      />
     );
   }
 
@@ -156,4 +101,7 @@ const App = () => {
   );
 };
 
-export default App;
+export default withLDProvider({
+  // it's safe to paste the client key with the react sdk
+  clientSideID: "5f3c84144c4ff20a392ef747",
+})(App);
