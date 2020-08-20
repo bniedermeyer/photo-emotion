@@ -104,6 +104,7 @@ const App = () => {
 export default withLDProvider({
   // it's safe to paste the client key with the react sdk
   // staging
-  // clientSideID: "5f3c84144c4ff20a392ef747",
-  clientSideID: "5f3c84144c4ff20a392ef748",
+  clientSideID: "5f3c84144c4ff20a392ef747",
+  // prod
+  // clientSideID: "5f3c84144c4ff20a392ef748",
 })(App);
